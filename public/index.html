@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterAI — Triage System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ===== SPLASH ===== -->
+    <div class="splash" id="splash">
+        <h1 class="splash-title">DISASTER AI</h1>
+        <div class="splash-steps">
+            <div class="splash-step" data-step="1"><span>INIT_NLP</span></div>
+            <div class="splash-step" data-step="2"><span>CONNECT_SOURCES</span></div>
+            <div class="splash-step" data-step="3"><span>LOAD_MODEL</span></div>
+            <div class="splash-step" data-step="4"><span>SYSTEM_READY</span></div>
+        </div>
+    </div>
+
+    <!-- ===== APP ===== -->
+    <div class="app-wrapper hidden" id="appWrapper">
+
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-text">AI_TRIAGE</span>
+            </div>
+
+            <div class="marquee-container" style="border:none; padding:1rem 0;">
+                <div class="marquee-content" style="font-size:1.5rem; animation-duration:10s;">
+                    <span>EMERGENCY FEED</span><span>OVERVIEW DASH</span><span>LIVE TRIAGE</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <button class="nav-btn active" data-target="page-dashboard">
+                    <span>DASHBOARD</span>
+                </button>
+                <button class="nav-btn" data-target="page-live">
+                    <span>LIVE_FEED</span>
+                    <span class="nav-badge" id="navBadge">0</span>
+                </button>
+                <button class="nav-btn" data-target="page-sources">
+                    <span>SOURCES</span>
+                </button>
+            </div>
+            <div class="sidebar-footer">
+                <div class="system-status"><span class="pulse"></span> ONLINE</div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- MARQUEE HEADER (Shared) -->
+            <div class="marquee-container accent">
+                <div class="marquee-content">
+                    <span>TRIAGE AGENT V2.0 // AUTOMATED DISASTER RESPONSE //</span>
+                    <span>TRIAGE AGENT V2.0 // AUTOMATED DISASTER RESPONSE //</span>
+                </div>
+            </div>
+
+            <!-- ══ DASHBOARD ══ -->
+            <section class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h2>DASHBOARD</h2>
+                    <p class="subtitle">SYSTEM OVERVIEW METRICS</p>
+                </div>
+                <div class="page-body">
+                    <div class="stats-grid stats-grid--6">
+                        <div class="stat-card">
+                            <div class="stat-title">PROCESSED</div>
+                            <div class="stat-val" id="statTotal">0</div>
+                        </div>
+                        <div class="stat-card stat-card--critical">
+                            <div class="stat-title">CRITICAL</div>
+                            <div class="stat-val" id="statCritical">0</div>
+                        </div>
+                        <div class="stat-card stat-card--high">
+                            <div class="stat-title">HIGH</div>
+                            <div class="stat-val" id="statHigh">0</div>
+                        </div>
+                        <div class="stat-card stat-card--medium">
+                            <div class="stat-title">MEDIUM</div>
+                            <div class="stat-val" id="statMedium">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">DUPLICATES</div>
+                            <div class="stat-val" id="statDuplicates">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">TRACKED</div>
+                            <div class="stat-val" id="statLocated">0</div>
+                        </div>
+                    </div>
+
+                    <div class="section-row">
+                        <div class="dash-card">
+                            <h3>DATA SOURCES</h3>
+                            <div class="source-bars" id="sourceBars"></div>
+                        </div>
+                        <div class="dash-card">
+                            <h3>CRITICAL ALERTS</h3>
+                            <div id="recentAlerts" class="recent-alerts">
+                                <p class="empty-mini">NO DATA</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stream-controls">
+                        <button class="btn btn--primary btn--lg" id="btnStartStream">
+                            INITIATE INGESTION
+                        </button>
+                        <button class="btn btn--outline btn--lg hidden" id="btnStopStream">
+                            HALT STREAM
+                        </button>
+                        <span class="stream-status" id="streamStatus"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ LIVE FEED ══ -->
+            <section class="page" id="page-live">
+                <div class="page-header flex-between">
+                    <div>
+                        <h2>LIVE FEED</h2>
+                        <p class="subtitle">AI PROCESSED QUEUE</p>
+                    </div>
+                    <div class="feed-controls">
+                        <button class="btn btn--outline btn--sm" id="btnToggleDups"
+                            onclick="toggleDuplicates()">SHOW_DUPLICATES</button>
+                        <select class="filter-select" id="filterUrgency">
+                            <option value="all">ALL URGENCY</option>
+                            <option value="critical">CRITICAL</option>
+                            <option value="high">HIGH+</option>
+                            <option value="medium">MEDIUM+</option>
+                        </select>
+                        <select class="filter-select" id="filterSource">
+                            <option value="all">ALL SOURCES</option>
+                            <option value="whatsapp">WHATSAPP</option>
+                            <option value="twitter">TWITTER/X</option>
+                            <option value="sms">SMS</option>
+                            <option value="email">EMAIL</option>
+                            <option value="helpline">HELPLINE</option>
+                            <option value="telegram">TELEGRAM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="page-body">
+                    <div id="messageFeed" class="feed-list"></div>
+                </div>
+            </section>
+
+            <!-- ══ CONNECTED SOURCES ══ -->
+            <section class="page" id="page-sources">
+                <div class="page-header">
+                    <h2>SOURCES</h2>
+                    <p class="subtitle">ACTIVE CHANNEL MONITORING</p>
+                </div>
+                <div class="page-body">
+                    <div class="sources-grid" id="sourcesGrid"></div>
+                </div>
+            </section>
+
+            <!-- ══ TRIAGE DETAIL ══ -->
+            <section class="page" id="page-detail">
+                <div class="page-header flex-between">
+                    <div>
+                        <h2>ANALYSIS</h2>
+                        <p class="subtitle">MESSAGE TRIAGE OUTPUT</p>
+                    </div>
+                    <button class="btn btn--outline btn--sm" onclick="navTo('page-live')">BACK</button>
+                </div>
+                <div class="page-body">
+                    <div class="detail-container" id="detailPanel"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

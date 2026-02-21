@@ -1,0 +1,13 @@
+{
+  "name": "disaster-triage-ai",
+  "version": "1.0.0",
+  "description": "AI-powered disaster message triage system for emergency management teams",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
